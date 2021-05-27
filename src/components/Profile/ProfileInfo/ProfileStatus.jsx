@@ -16,7 +16,7 @@ class ProfileStatus extends React.Component {
             editMode: false
         })
     }
-
+    // тестовый коммент
     render() {
         return (
             <div>
