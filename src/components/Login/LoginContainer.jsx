@@ -7,10 +7,15 @@ class LoginContainer extends React.Component {
 
     render() {
         return <Login login={this.props.login}
-                      logout={this.props.logout}/>
+                      logout={this.props.logout}
+                      isAuth={this.props.isAuth}/>
     }
 }
 
-export default connect(null, {
+const mapStateToProps = (state) => ({
+    isAuth: state.auth.isAuth
+})
+
+export default connect(mapStateToProps, {
     login, logout
 })(LoginContainer);

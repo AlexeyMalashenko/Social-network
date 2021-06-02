@@ -11,24 +11,26 @@ import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
 import LoginContainer from "./components/Login/LoginContainer";
 
-const App = (props) => {
-    return (
-        <BrowserRouter>
-            <div className='app-wrapper'>
-                <HeaderContainer/>
-                <Navbar/>
-                <div className='app-wrapper-content'>
-                    <Route path = '/dialogs' render={ () => <DialogsContainer/> }/>
-                    <Route path = '/profile/:userId?' render={ () => <ProfileContainer/> }/>
-                    <Route path = '/news' render={ () => <News/> }/>
-                    <Route path = '/music' render={ () => <Music/> }/>
-                    <Route path = '/settings' render={ () => <Settings/> }/>
-                    <Route path = '/users' render={ () => <UsersContainer/> }/>
-                    <Route path = '/login' render={ () => <LoginContainer/> }/>
+class App extends React.Component {
+    render() {
+        return (
+            <BrowserRouter>
+                <div className='app-wrapper'>
+                    <HeaderContainer/>
+                    <Navbar/>
+                    <div className='app-wrapper-content'>
+                        <Route path='/dialogs' render={() => <DialogsContainer/>}/>
+                        <Route path='/profile/:userId?' render={() => <ProfileContainer/>}/>
+                        <Route path='/news' render={() => <News/>}/>
+                        <Route path='/music' render={() => <Music/>}/>
+                        <Route path='/settings' render={() => <Settings/>}/>
+                        <Route path='/users' render={() => <UsersContainer/>}/>
+                        <Route path='/login' render={() => <LoginContainer/>}/>
+                    </div>
                 </div>
-            </div>
-        </BrowserRouter>
-    )
+            </BrowserRouter>
+        )
+    }
 }
 
 export default App;

@@ -1,6 +1,8 @@
 import * as React from "react";
-import {Redirect} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+import {compose} from "redux";
+import {getUserProfile, getUserStatus, updateUserStatus} from "../../redux/profile-reducer";
 
 let mapStateToPropsForRedirect = (state) => ({
     isAuth: state.auth.isAuth
