@@ -2,19 +2,19 @@ import React from 'react';
 import s from './ProfileInfo.module.css';
 import Preloader from "../../common/Preloader/preloader";
 import ProfileStatusWithHooks from "./ProfileStatusWithHooks";
+import defaultUserPhoto from "../../../assets/image/anonymous-avatar-icon-9.jpg";
 
 const ProfileInfo = (props) => {
     if (!props.profile) {
         return <Preloader/>
     }
     return (
-
         <div className={s.ProfileInfoStyle}>
             <div className={s.descriptionBlock}>
                 <div>
                     {props.profile.fullName}
                 </div>
-                <img src={props.profile.photos.large}/>
+                <img src={props.profile.photos.large != null ? props.profile.photos.large : defaultUserPhoto}/>
                 <ProfileStatusWithHooks status={props.status} updateUserStatus={props.updateUserStatus}/>
                 <div>
                     <div>Обо мне: {props.profile.aboutMe}</div>
@@ -31,10 +31,8 @@ const ProfileInfo = (props) => {
                     <div>
                         {props.profile.lookingForAJob && "В поиске работы: " + props.profile.lookingForAJobDescription}
                     </div>
-
                 </div>
             </div>
-
         </div>
     )
 }
