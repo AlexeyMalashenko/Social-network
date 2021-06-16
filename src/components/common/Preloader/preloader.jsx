@@ -1,4 +1,4 @@
-import styles from "../../Users/Users.module.css";
+import styles from "../Preloader/preloader.module.css";
 import React from "react";
 
 let Preloader = (props) => {
