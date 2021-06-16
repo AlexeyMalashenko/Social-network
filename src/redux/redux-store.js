@@ -1,10 +1,10 @@
-import {applyMiddleware, combineReducers, createStore} from "redux";
+import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import profileReducer from "./profile-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import usersReducer from "./users-reducer";
 import authReducer from "./auth-reducer";
 import thunkMiddleware from "redux-thunk";
-import { reducer as formReduser} from 'redux-form';
+import {reducer as formReduser} from 'redux-form';
 import appReducer from "./app-reducer";
 
 let reducers = combineReducers({
@@ -17,8 +17,10 @@ let reducers = combineReducers({
     }
 );
 
-let store = createStore(reducers, applyMiddleware(thunkMiddleware));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // для браузерного дебага редакса
 
-window.store = store;
+let store = createStore(reducers, composeEnhancers(applyMiddleware(thunkMiddleware)));
+
+window.__store__ = store;
 
 export default store;
