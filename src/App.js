@@ -30,7 +30,7 @@ class App extends React.Component {
         }
         return (
             <div className='app-wrapper'>
-                <React.Suspense fallback={<Preloader/>}>>
+                <React.Suspense fallback={<Preloader/>}>
                 <HeaderContainer/>
                 <Navbar/>
                 <div className='app-wrapper-content'>
