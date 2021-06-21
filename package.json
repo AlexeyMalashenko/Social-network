@@ -2,7 +2,7 @@
   "name": "social",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://alexeymalashenko.github.io/Social-network",
+  "homepage": "https://alexeymalashenko.github.io/Social-network/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
