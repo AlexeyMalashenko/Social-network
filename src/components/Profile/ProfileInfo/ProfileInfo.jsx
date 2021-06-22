@@ -1,10 +1,14 @@
-import React from 'react';
-import s from './ProfileInfo.module.css';
+import React, {useState} from 'react';
+import style from './ProfileInfo.module.css';
 import Preloader from "../../common/Preloader/preloader";
 import ProfileStatusWithHooks from "./ProfileStatusWithHooks";
 import defaultUserPhoto from "../../../assets/image/anonymous-avatar-icon-9.jpg";
+import ProfileDataForm from "./ProfileDataForm";
 
 const ProfileInfo = (props) => {
+
+    let [editMode, setEditMode] = useState(false);
+
     if (!props.profile) {
         return <Preloader/>
     }
@@ -16,34 +20,65 @@ const ProfileInfo = (props) => {
         ;
     };
 
+    const onSubmit = (formData) => {
+        props.saveUserProfile(formData).then(
+            () => {
+                setEditMode(false)
+            }
+        );
+    };
+
     return (
-        <div className={s.ProfileInfoStyle}>
-            <div className={s.descriptionBlock}>
-                <div>
-                    {props.profile.fullName}
-                </div>
+        <div className={style.ProfileInfoStyle}>
+            <div className={style.descriptionBlock}>
                 <img src={props.profile.photos.large != null ? props.profile.photos.large : defaultUserPhoto}/>
                 {props.isOwner && <input type={"file"} onChange={onProfileUserPhotoSelected}/>}
-                <ProfileStatusWithHooks status={props.status} updateUserStatus={props.updateUserStatus}/>
-                <div>
-                    <div>Обо мне: {props.profile.aboutMe}</div>
-                    <div> Контакты:
-                        <div>Фейсбук {props.profile.contacts.facebook}</div>
-                        <div>Мой сайт {props.profile.contacts.website}</div>
-                        <div>ВК {props.profile.contacts.vk}</div>
-                        <div>Твиттер {props.profile.contacts.twitter}</div>
-                        <div>Инстарграмм {props.profile.contacts.instagram}</div>
-                        <div>Ютуб {props.profile.contacts.youtube}</div>
-                        <div>ГитХаб {props.profile.contacts.github}</div>
-                        <div>Главная ссылка {props.profile.contacts.mainLink}</div>
-                    </div>
-                    <div>
-                        {props.profile.lookingForAJob && "В поиске работы: " + props.profile.lookingForAJobDescription}
-                    </div>
-                </div>
             </div>
+            <ProfileStatusWithHooks status={props.status} updateUserStatus={props.updateUserStatus}/>
+            {editMode ?
+                <ProfileDataForm initialValues={props.profile}
+                                 profile={props.profile}
+                                 onSubmit={onSubmit}/> :
+                <ProfileData profile={props.profile}
+                             isOwner={props.isOwner}
+                             goToEditMode={() => {
+                                 setEditMode(true)
+                             }}
+                />}
         </div>
     )
 }
+
+const ProfileData = ({profile, isOwner, goToEditMode}) => {
+    return <div>
+        {isOwner && <div>
+            <button onClick={goToEditMode}>Редактировать</button>
+        </div>}
+        <div>
+            <b>Полное имя:</b> {profile.fullName}
+        </div>
+        <div>
+            <b>В поиске работы:</b> {profile.lookingForAJob ? "Да" : "Нет"}
+        </div>
+        {profile.lookingForAJob &&
+        <div>
+            <b>Мои профессиональные навыки:</b> {profile.lookingForAJobDescription}
+        </div>
+        }
+        <div>
+            <b>Обо мне:</b> {profile.aboutMe}
+        </div>
+        <div>
+            <b>Контакты:</b> {Object.keys(profile.contacts).map(key => {
+            return <Contact key={key} contactTitle={key} contactValue={profile.contacts[key]}/>
+        })}
+        </div>
+    </div>
+}
+
+const Contact = ({contactTitle, contactValue}) => {
+    return <div className={style.contact}><b>{contactTitle} :</b> {contactValue}</div>
+}
+
 
 export default ProfileInfo;
