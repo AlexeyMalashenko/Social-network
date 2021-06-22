@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {updateUserStatus} from "../../../redux/profile-reducer";
 
 
 const ProfileStatusWithHooks = (props) => {
