@@ -1,4 +1,5 @@
 import {followAPI, userAPI} from "../api/api";
+import { userType } from "../types/types";
 
 const FOLLOW = 'users/FOLLOW';
 const UNFOLLOW = 'users/UNFOLLOW';
@@ -9,44 +10,17 @@ const TOGGLE_IS_FETCHING = 'users/TOGGLE_IS_FETCHING';
 const TOGGLE_IS_FOLLOWING_PROGRESS = 'users/TOGGLE_IS_FOLLOWING_PROGRESS';
 
 let initialState = {
-    users: [
-        /* {
-             id: 1, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: true, fullName: 'Name1', status: 'Status1', location: {city: 'Minsk', country: 'Belarus'}
-         },
-         {
-             id: 2, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: false, fullName: 'Name2', status: 'Status2', location: {city: 'Minsk', country: 'Belarus'}
-         },
-         {
-             id: 3, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: true, fullName: 'Name3', status: 'Status3', location: {city: 'Minsk', country: 'Belarus'}
-         },
-         {
-             id: 4, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: false, fullName: 'Name4', status: 'Status4', location: {city: 'Minsk', country: 'Belarus'}
-         },
-         {
-             id: 5, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: true, fullName: 'Name5', status: 'Status5', location: {city: 'Minsk', country: 'Belarus'}
-         },
-         {
-             id: 6, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: false, fullName: 'Name6', status: 'Status6', location: {city: 'Minsk', country: 'Belarus'}
-         },
-         {
-             id: 7, photoUrl: 'https://bipbap.ru/wp-content/uploads/2018/03/03-3-700x637-640x582.jpg',
-             followed: true, fullName: 'Name7', status: 'Status7', location: {city: 'Minsk', country: 'Belarus'}
-         }*/
-    ],
+    users: [] as Array<userType>,
     pageSize: 10,
     totalUsersCount: 0,
     currentPage: 1,
     isFetching: false,
-    followingInProgress: []
+    followingInProgress: [] as Array<number> // array of users ids
 };
 
-const usersReducer = (state = initialState, action) => {
+type initialStateType = typeof initialState;
+
+const usersReducer = (state = initialState, action: any): initialStateType => {
     switch (action.type) {
         case FOLLOW:
             return {
@@ -105,20 +79,49 @@ const usersReducer = (state = initialState, action) => {
     }
 };
 
-export const followSuccess = (userId) => ({type: FOLLOW, userId});
-export const unfollowSuccess = (userId) => ({type: UNFOLLOW, userId});
-export const setUsers = (users) => ({type: SET_USERS, users});
-export const setCurrentPage = (currentPage) => ({type: SET_CURRENT_PAGE, currentPage});
-export const setTotalUsersCount = (totalUsersCount) => ({type: SET_TOTAL_USERS_COUNT, totalUsersCount});
-export const toggleIsFetching = (isFetching) => ({type: TOGGLE_IS_FETCHING, isFetching});
-export const toggleFollowingProgress = (isFetching, userId) => ({
+export const followSuccess = (userId: number): followSuccessActionType => ({type: FOLLOW, userId});
+type followSuccessActionType = {
+    type: typeof FOLLOW,
+    userId: number
+}
+export const unfollowSuccess = (userId: number): unfollowSuccessActionType => ({type: UNFOLLOW, userId});
+type unfollowSuccessActionType = {
+    type: typeof UNFOLLOW,
+    userId: number
+}
+export const setUsers = (users: Array<userType>): setUsersActionType => ({type: SET_USERS, users});
+type setUsersActionType = {
+    type: typeof SET_USERS,
+    users: Array<userType>
+}
+export const setCurrentPage = (currentPage: number): setCurrentPageActionType => ({type: SET_CURRENT_PAGE, currentPage});
+type setCurrentPageActionType = {
+    type: typeof SET_CURRENT_PAGE,
+    currentPage: number
+}
+export const setTotalUsersCount = (totalUsersCount: number): setTotalUsersCountActionType => ({type: SET_TOTAL_USERS_COUNT, totalUsersCount});
+type setTotalUsersCountActionType = {
+    type: typeof SET_TOTAL_USERS_COUNT,
+    totalUsersCount: number
+}
+export const toggleIsFetching = (isFetching: boolean): toggleIsFetchingActionType => ({type: TOGGLE_IS_FETCHING, isFetching});
+type toggleIsFetchingActionType = {
+    type: typeof TOGGLE_IS_FETCHING,
+    isFetching: boolean
+}
+export const toggleFollowingProgress = (isFetching: boolean, userId: number): toggleFollowingProgressActionType => ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS,
     isFetching,
     userId
 });
+type toggleFollowingProgressActionType = {
+    type: typeof TOGGLE_IS_FOLLOWING_PROGRESS,
+    isFetching: boolean,
+    userId: number
+}
 
-export const requestUsers = (page, pageSize) => {
-    return async (dispatch) => {
+export const requestUsers = (page: number, pageSize: number) => {
+    return async (dispatch: any) => {
         dispatch(toggleIsFetching(true));
 
         let data = await userAPI.getUsers(page, pageSize);
@@ -129,8 +132,8 @@ export const requestUsers = (page, pageSize) => {
 };
 
 
-export const follow = (userId) => {
-    return async (dispatch) => {
+export const follow = (userId: number) => {
+    return async (dispatch: any) => {
         dispatch(toggleFollowingProgress(true, userId));
         let data = await followAPI.setFollow(userId);
         if (data.resultCode == 0) {
@@ -140,8 +143,8 @@ export const follow = (userId) => {
     }
 };
 
-export const unfollow = (userId) => {
-    return async (dispatch) => {
+export const unfollow = (userId: number) => {
+    return async (dispatch: any) => {
         dispatch(toggleFollowingProgress(true, userId));
         let data = await followAPI.setUnfollow(userId)
         if (data.resultCode == 0) {
