@@ -6,26 +6,33 @@ import {Redirect} from "react-router-dom";
 import {Field, reduxForm} from "redux-form";
 import {TextArea} from "../common/FormsControls/FormsControls";
 import {maxLengthCreator, required} from "../../utils/validators/validators";
+import {dialogType, messageType } from '../../types/types';
 
 const maxLength100 = maxLengthCreator(100);
 
-const Dialogs = (props) => {
-    let state = props.dialogsPage;
+type PropsType = {
+    isAuth: boolean
+    dialogs: Array<dialogType>
+    messages: Array<messageType>
+    sendMessage: (newMessageBody: string) => void
+}
 
-    let dialogsElements = state.dialogs
+const Dialogs: React.FC<PropsType> = ({dialogs, messages, isAuth, sendMessage }) => {
+
+    let dialogsElements = dialogs
         .map(dialog =>
             <DialogItem name={dialog.name} id={dialog.id} key={dialog.id}/>
         );
 
-    let messagesElements = state.messages
+    let messagesElements = messages
         .map(message =>
             <Message message={message.message} key={message.id}/>
         );
 
-    if (!props.isAuth) return <Redirect to={"/login"}/>;
+    if (!isAuth) return <Redirect to={"/login"}/>;
 
-    const addNewMessage = (formData) => {
-        props.sendMessage(formData.newMessageBody);
+    const addNewMessage = (formData: any) => {
+        sendMessage(formData.newMessageBody);
     }
     return (
         <div className={s.dialogs}>
@@ -41,9 +48,13 @@ const Dialogs = (props) => {
     )
 }
 
-const AddMessageForm = (props) => {
+type PropsFormType= {
+    handleSubmit: any
+}
+
+const AddMessageForm:React.FC<PropsFormType> = ({handleSubmit}) => {
     return (
-        <form onSubmit={props.handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <div>
                 <Field
                        component={TextArea}

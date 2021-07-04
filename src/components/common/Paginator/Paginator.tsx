@@ -2,18 +2,26 @@ import React, {useState} from 'react'
 import styles from "./Paginator.module.css";
 import classNames from "classnames"
 
-let Paginator = (props) => {
+type PropsType = {
+    totalItemsCount: number
+    pageSize: number
+    currentPage: number
+    onPageChanged: (pageNumber: number) => void
+    portionSize?: number
+}
 
-    let pagesCount = Math.ceil(props.totalItemsCount / props.pageSize);
-    let pages = [];
+let Paginator: React.FC<PropsType> = ({totalItemsCount,pageSize,currentPage,onPageChanged,portionSize = 10}) => {
+
+    let pagesCount = Math.ceil(totalItemsCount / pageSize);
+    let pages: Array<number> = [];
     for (let i = 1; i <= pagesCount; i++) {
         pages.push(i);
     }
 
-    let portionCount = Math.ceil(pagesCount / props.portionSize);
+    let portionCount = Math.ceil(pagesCount / portionSize);
     let [portionNumber, setPortionNumber] = useState(1);
-    let leftPortionPageNumber = (portionNumber - 1) * props.portionSize + 1;
-    let rightPortionPageNumber = portionNumber * props.portionSize;
+    let leftPortionPageNumber = (portionNumber - 1) * portionSize + 1;
+    let rightPortionPageNumber = portionNumber * portionSize;
 
     return <div className={styles.paginator}>
         {portionNumber > 1 &&
@@ -24,13 +32,13 @@ let Paginator = (props) => {
             .filter(portion => portion >= leftPortionPageNumber && portion <= rightPortionPageNumber)
             .map(page => {
                 return <span className={ classNames({
-                    [styles.selectedPage]: props.currentPage === page},
+                    [styles.selectedPage]: currentPage === page},
                     styles.pageNumber)}
 
                              onClick={(e) => {
-                                 props.onPageChanged(page)
+                                 onPageChanged(page)
                              }}
-                             key={page.id}>
+                             key={page}>
                         {page}
                     </span>
             })}

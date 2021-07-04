@@ -4,6 +4,7 @@ import Preloader from "../../common/Preloader/preloader";
 import ProfileStatusWithHooks from "./ProfileStatusWithHooks";
 import defaultUserPhoto from "../../../assets/image/anonymous-avatar-icon-9.jpg";
 import ProfileDataForm from "./ProfileDataForm";
+import {profileType} from "../../../types/types";
 
 const ProfileInfo = (props) => {
 

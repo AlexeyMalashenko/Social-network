@@ -29,6 +29,15 @@ export type userType = {
     id: number
     name: string
     status: string
-    phoros: photosType
+    photos: photosType
     followed: boolean
+}
+
+export type dialogType = {
+    id: number,
+    name: string
+}
+export type messageType = {
+    id: number,
+    message: string
 }
