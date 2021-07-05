@@ -1,5 +1,7 @@
 import {authAPI as authApi, securityAPI} from "../api/api";
 import {stopSubmit} from "redux-form";
+import {ThunkAction} from "redux-thunk";
+import {AppStateType} from "./redux-store";
 
 const SET_USER_DATA = 'auth/SET_USER_DATA';
 const GET_CAPTCHA_URL_SUCCESS = 'auth/GET_CAPTCHA_URL_SUCCESS';
@@ -48,9 +50,11 @@ type setCaptchaUrlActionType = {
 export const setCaptchaUrl = (captchaUrl: string): setCaptchaUrlActionType => ({
     type: GET_CAPTCHA_URL_SUCCESS, payload: {captchaUrl}
 });
-
-//санка
-export const getAuthUserData = () => async (dispatch: any) => {
+//общий тип экшенов
+type ActionsTypes = setAuthUserDataActionType | setCaptchaUrlActionType;
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+//санки
+export const getAuthUserData = (): ThunkType => async (dispatch) => {
     let response = await authApi.me();
 
     if (response.data.resultCode === 0) {
@@ -58,8 +62,7 @@ export const getAuthUserData = () => async (dispatch: any) => {
         dispatch(setAuthUserData(id, email, login, true));
     }
 }
-
-//санка
+//решить вопрос с типом санки, в которой есть stopSumbit из redux-form
 export const login = (email: string, password: string, rememberMe: boolean, captcha: string) => async (dispatch: any) => {
     let response = await authApi.login(email, password, rememberMe, captcha);
 
@@ -74,16 +77,14 @@ export const login = (email: string, password: string, rememberMe: boolean, capt
     }
 }
 
-//санка
-export const logout = () => async (dispatch: any) => {
+export const logout = (): ThunkType  => async (dispatch) => {
     let response = await authApi.logout()
     if (response.data.resultCode === 0) {
         dispatch(setAuthUserData(null, null, null, false));
     }
 }
 
-//санка
-export const getCaptcha = () => async (dispatch: any) => {
+export const getCaptcha = (): ThunkType  => async (dispatch) => {
     let response = await securityAPI.getCaptchaUrl()
     const captchaUrl = response.data.url;
     dispatch(setCaptchaUrl(captchaUrl));

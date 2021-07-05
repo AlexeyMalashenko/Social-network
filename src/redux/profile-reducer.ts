@@ -1,6 +1,8 @@
 import {profileAPI} from "../api/api";
 import {stopSubmit} from "redux-form";
 import {photosType, postsDataType, profileType } from "../types/types";
+import {ThunkAction} from "redux-thunk";
+import { AppStateType } from "./redux-store";
 
 const ADD_POST = 'profile/ADD-POST';
 const SET_USER_PROFILE = 'profile/SET_USER_PROFILE';
@@ -54,6 +56,8 @@ const profileReducer = (state = initialState, action: any): initialStateType => 
             return state;
     }
 };
+//типизация экшенов
+type ActionsTypes = addPostAСType | setUserProfileType | setStatusType | deletePostType | savePhotoSuccessType;
 
 type addPostAСType = {
     type: typeof ADD_POST,
@@ -82,31 +86,35 @@ type savePhotoSuccessType = {
 export const savePhotoSuccess = (photos: photosType): savePhotoSuccessType => ({type: SAVE_PHOTO_SUCCESS, photos});
 
 //санки
-export const getUserProfile = (userId: number) => async (dispatch: any) => {
+type ThunkType = ThunkAction<Promise<any>, AppStateType, unknown, ActionsTypes>;
+
+export const getUserProfile = (userId: number): ThunkType => async (dispatch) => {
     let response = await profileAPI.getProfile(userId)
     dispatch(setUserProfile(response));
 }
 
-export const getUserStatus = (userId: number) => async (dispatch: any) => {
+export const getUserStatus = (userId: number): ThunkType  => async (dispatch) => {
     let response = await profileAPI.getStatus(userId)
     dispatch(setStatus(response.data));
 }
 
-export const updateUserStatus = (status: string) => async (dispatch: any) => {
+export const updateUserStatus = (status: string): ThunkType  => async (dispatch) => {
     let response = await profileAPI.updateStatus(status)
     if (response.data.resultCode === 0) {
         dispatch(setStatus(status));
     }
 }
 
-export const saveProfileUserPhoto = (file: any) => async (dispatch: any) => {
+export const saveProfileUserPhoto = (file: any): ThunkType  => async (dispatch) => {
     let response = await profileAPI.saveProfilePhoto(file)
     if (response.data.resultCode === 0) {
         dispatch(savePhotoSuccess(response.data.data.photos));
     }
 }
 
-export const saveUserProfile = (profile: profileType) => async (dispatch: any) => {
+
+//решить вопрос с типом санки, в которой есть stopSumbit из redux-form
+export const saveUserProfile = (profile: profileType)  => async (dispatch: any) => {
     let response = await profileAPI.saveProfile(profile);
     if (response.data.resultCode === 0) {
         dispatch(setUserProfile(profile));
