@@ -1,4 +1,4 @@
-import {authAPI as authApi, securityAPI} from "../api/api";
+import {authAPI as authApi, ResultCodeEnum, securityAPI} from "../api/api";
 import {stopSubmit} from "redux-form";
 import {ThunkAction} from "redux-thunk";
 import {AppStateType} from "./redux-store";
@@ -55,15 +55,15 @@ type ActionsTypes = setAuthUserDataActionType | setCaptchaUrlActionType;
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
 //санки
 export const getAuthUserData = (): ThunkType => async (dispatch) => {
-    let response = await authApi.me();
+    let meData = await authApi.me();
 
-    if (response.data.resultCode === 0) {
-        let {id, email, login} = response.data.data;
+    if (meData.resultCode === ResultCodeEnum.Success) {
+        let {id, email, login} = meData.data;
         dispatch(setAuthUserData(id, email, login, true));
     }
 }
 //решить вопрос с типом санки, в которой есть stopSumbit из redux-form
-export const login = (email: string, password: string, rememberMe: boolean, captcha: string) => async (dispatch: any) => {
+export const login = (email: string, password: string, rememberMe: boolean, captcha: null | string) => async (dispatch: any) => {
     let response = await authApi.login(email, password, rememberMe, captcha);
 
     if (response.data.resultCode === 0) {
