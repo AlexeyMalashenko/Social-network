@@ -50,9 +50,11 @@ type setCaptchaUrlActionType = {
 export const setCaptchaUrl = (captchaUrl: string): setCaptchaUrlActionType => ({
     type: GET_CAPTCHA_URL_SUCCESS, payload: {captchaUrl}
 });
+
 //общий тип экшенов
 type ActionsTypes = setAuthUserDataActionType | setCaptchaUrlActionType;
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+
 //санки
 export const getAuthUserData = (): ThunkType => async (dispatch) => {
     let meData = await authApi.me();
@@ -64,15 +66,15 @@ export const getAuthUserData = (): ThunkType => async (dispatch) => {
 }
 //решить вопрос с типом санки, в которой есть stopSumbit из redux-form
 export const login = (email: string, password: string, rememberMe: boolean, captcha: null | string) => async (dispatch: any) => {
-    let response = await authApi.login(email, password, rememberMe, captcha);
+    let loginData = await authApi.login(email, password, rememberMe, captcha);
 
-    if (response.data.resultCode === 0) {
+    if (loginData.resultCode === ResultCodeEnum.Success) {
         dispatch(getAuthUserData());
     } else {
-        if (response.data.resultCode === 10) {
+        if (loginData.resultCode === ResultCodeEnum.CaptchaIsRequired) {
             dispatch(getCaptcha());
         }
-        let message = response.data.messages.length > 0 ? response.data.messages[0] : "Some error";
+        let message = loginData.messages.length > 0 ? loginData.messages[0] : "Some error";
         dispatch(stopSubmit("login", {_error: message}));
     }
 }

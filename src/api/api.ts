@@ -9,10 +9,11 @@ const instance = axios.create({
     }
 });
 
-
+//server response result code constant
 export enum ResultCodeEnum {
     Success = 0,
-    Error = 1
+    Error = 1,
+    CaptchaIsRequired = 10
 }
 
 
@@ -45,12 +46,22 @@ type MeResponseType = {
 
 }
 
+type LoginResponseType = {
+    data: {
+        userId: number
+    }
+    resultCode: ResultCodeEnum
+    messages: Array<string>
+
+}
+
 export const authAPI = {
     me() {
         return instance.get<MeResponseType>(`auth/me`).then(response => response.data);
     },
     login(email: string, password: string, rememberMe: boolean = false, captcha: null | string = null) {
-        return instance.post(`auth/login`, {email, password, rememberMe, captcha});
+        return instance.post<LoginResponseType>(`auth/login`, {email, password, rememberMe, captcha})
+            .then(response => response.data)
     },
     logout() {
         return instance.delete(`auth/login`);
