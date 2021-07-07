@@ -1,8 +1,8 @@
-import {profileAPI} from "../api/api";
+import {profileAPI, ResultCodeEnum} from "../api/api";
 import {stopSubmit} from "redux-form";
-import {photosType, postsDataType, profileType } from "../types/types";
+import {photosType, postsDataType, profileType} from "../types/types";
 import {ThunkAction} from "redux-thunk";
-import { AppStateType } from "./redux-store";
+import {AppStateType} from "./redux-store";
 
 const ADD_POST = 'profile/ADD-POST';
 const SET_USER_PROFILE = 'profile/SET_USER_PROFILE';
@@ -89,34 +89,34 @@ export const savePhotoSuccess = (photos: photosType): savePhotoSuccessType => ({
 type ThunkType = ThunkAction<Promise<any>, AppStateType, unknown, ActionsTypes>;
 
 export const getUserProfile = (userId: number): ThunkType => async (dispatch) => {
-    let response = await profileAPI.getProfile(userId)
-    dispatch(setUserProfile(response));
+    let userData = await profileAPI.getProfile(userId)
+    dispatch(setUserProfile(userData));
 }
 
 export const getUserStatus = (userId: number): ThunkType  => async (dispatch) => {
     let response = await profileAPI.getStatus(userId)
-    dispatch(setStatus(response.data));
+    dispatch(setStatus(response));
 }
 
 export const updateUserStatus = (status: string): ThunkType  => async (dispatch) => {
     let response = await profileAPI.updateStatus(status)
-    if (response.data.resultCode === 0) {
+    if (response.data.resultCode === ResultCodeEnum.Success) {
         dispatch(setStatus(status));
     }
 }
 
 export const saveProfileUserPhoto = (file: any): ThunkType  => async (dispatch) => {
-    let response = await profileAPI.saveProfilePhoto(file)
-    if (response.data.resultCode === 0) {
-        dispatch(savePhotoSuccess(response.data.data.photos));
+    let photoData = await profileAPI.saveProfilePhoto(file)
+    if (photoData.resultCode === ResultCodeEnum.Success) {
+        dispatch(savePhotoSuccess(photoData.data.photos));
     }
 }
 
 
-//решить вопрос с типом санки, в которой есть stopSumbit из redux-form
+//решить вопрос с типом санки, в которой есть stopSubmit из redux-form
 export const saveUserProfile = (profile: profileType)  => async (dispatch: any) => {
     let response = await profileAPI.saveProfile(profile);
-    if (response.data.resultCode === 0) {
+    if (response.data.resultCode === ResultCodeEnum.Success) {
         dispatch(setUserProfile(profile));
     } else {
         dispatch(stopSubmit("edit-profile", {_error: response.data.messages[0]}));

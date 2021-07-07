@@ -1,5 +1,4 @@
-import {Dispatch} from "redux";
-import {followAPI, userAPI} from "../api/api";
+import {followAPI, ResultCodeEnum, userAPI} from "../api/api";
 import {userType} from "../types/types";
 import {AppStateType} from "./redux-store";
 import {ThunkAction} from "redux-thunk";
@@ -137,8 +136,6 @@ type toggleFollowingProgressActionType = {
 }
 
 
-type GetStateType = () => AppStateType;
-type DispatchType = Dispatch<ActionsTypes>;
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
 
 //санки
@@ -156,7 +153,7 @@ export const follow = (userId: number): ThunkType => {
     return async (dispatch) => {
         dispatch(toggleFollowingProgress(true, userId));
         let data = await followAPI.setFollow(userId);
-        if (data.resultCode == 0) {
+        if (data.resultCode == ResultCodeEnum.Success) {
             dispatch(followSuccess(userId));
         }
         dispatch(toggleFollowingProgress(false, userId));
@@ -167,7 +164,7 @@ export const unfollow = (userId: number): ThunkType  => {
     return async (dispatch) => {
         dispatch(toggleFollowingProgress(true, userId));
         let data = await followAPI.setUnfollow(userId)
-        if (data.resultCode == 0) {
+        if (data.resultCode == ResultCodeEnum.Success) {
             dispatch(unfollowSuccess(userId));
         }
         dispatch(toggleFollowingProgress(false, userId));

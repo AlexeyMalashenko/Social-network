@@ -1,5 +1,5 @@
 import React from 'react';
-import {Field, reduxForm} from "redux-form";
+import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {Input} from "../common/FormsControls/FormsControls";
 import {maxLengthCreator, required} from "../../utils/validators/validators";
 import {Redirect} from "react-router-dom";
@@ -7,7 +7,11 @@ import styles from "./../common/FormsControls/FormsControls.module.css";
 
 const maxLength40 = maxLengthCreator(40);
 
-const LoginForm = (props) => {
+type LoginFormOwnProps = {
+    captchaUrl: string | null
+}
+
+const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType, LoginFormOwnProps> & LoginFormOwnProps> = (props) => {
     return (
         <form onSubmit={props.handleSubmit}>
             <div>
@@ -51,11 +55,28 @@ const LoginForm = (props) => {
     )
 }
 
-const LoginReduxForm = reduxForm({form: 'login'})(LoginForm);
+const LoginReduxForm = reduxForm<LoginFormValuesType, LoginFormOwnProps>({form: 'login'})(LoginForm);
 
-const Login = (props) => {
-    const onSubmit = (formData) => {
-        props.login(formData.email,formData.password,formData.rememberMe, formData.captcha);
+type LoginTypes = {
+    captchaUrl: string | null
+    isAuth: boolean
+    login: (email: string,
+            password: string,
+            rememberMe: boolean,
+            captcha: string | null) => void
+    logout: () => void
+}
+
+type LoginFormValuesType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha: string | null
+}
+
+const Login: React.FC<LoginTypes> = (props) => {
+    const onSubmit = (formData: LoginFormValuesType) => {
+        props.login(formData.email, formData.password, formData.rememberMe, formData.captcha);
     }
     if (props.isAuth) {
         return <Redirect to={"/profile"}/>

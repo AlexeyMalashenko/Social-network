@@ -13,11 +13,11 @@ type MapDispatchPropsType = {
     login: (email: string,
             password: string,
             rememberMe: boolean,
-            captcha: string) => void
+            captcha: string | null) => void
     logout: () => void
 }
 
-type PropsType = MapStatePropsType & MapDispatchPropsType;
+export type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 class LoginContainer extends React.Component<PropsType> {
     render() {
@@ -30,7 +30,7 @@ class LoginContainer extends React.Component<PropsType> {
 }
 
 
-const mapStateToProps = (state: AppStateType) => ({
+const mapStateToProps = (state: AppStateType): MapStatePropsType => ({
     isAuth: state.auth.isAuth,
     captchaUrl: state.auth.captchaUrl
 })
