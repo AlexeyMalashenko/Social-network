@@ -3,8 +3,6 @@ import {connect} from "react-redux";
 import {
     follow,
     unfollow,
-    setCurrentPage,
-    toggleFollowingProgress,
     requestUsers
 } from "../../redux/users-reducer";
 import Users from "./Users";
@@ -33,7 +31,6 @@ type MapDispatchPropsType = {
     follow: (userId: number) => void
     unfollow: (userId: number) => void
     getUsers: (currentPage: number, pageSize: number) => void
-    setCurrentPage: (page: number) => void
 }
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
@@ -46,7 +43,6 @@ class UsersContainer extends React.Component<PropsType> {
     }
 
     onPageChanged = (pageNumber: number) => {
-        this.props.setCurrentPage(pageNumber);
         this.props.getUsers(pageNumber, this.props.pageSize);
     }
 
@@ -80,5 +76,5 @@ let mapStateToProps = (state: AppStateType): MapStatePropsType => {
 export default compose(
     // <TStateProps = {}, TDispatchProps = {}, TOwnProps = {}, State = DefaultState>
     connect<MapStatePropsType, MapDispatchPropsType, null, AppStateType>(mapStateToProps,
-        {follow, unfollow, getUsers: requestUsers, setCurrentPage
+        {follow, unfollow, getUsers: requestUsers
     }))(UsersContainer);
