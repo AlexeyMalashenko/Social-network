@@ -1,5 +1,6 @@
-import profileReducer, {addPostAС, deletePost} from "./profile-reducer";
+import profileReducer, {actions} from "./profile-reducer";
 import React from "react";
+import {profileType} from "../types/types";
 
 //start test data
 let state = {
@@ -9,12 +10,14 @@ let state = {
         {id: 3, message: 'message 3', likesCount: 14},
         {id: 4, message: 'message 4', likesCount: 111},
         {id: 5, message: 'message 5', likesCount: 112},
-    ]
+    ],
+    profile: null,
+    status: ""
 };
 
 
 it('length og posts should be incremented', () => {
-    let action = addPostAС("some text of post");
+    let action = actions.addPostAС("some text of post");
     //action
     let newState = profileReducer(state, action);
     //expectation
@@ -22,7 +25,7 @@ it('length og posts should be incremented', () => {
 });
 
 it('message of new post should be correct', () => {
-    let action = addPostAС("some test text for post");
+    let action = actions.addPostAС("some test text for post");
     //action
     let newState = profileReducer(state, action);
     //expectation
@@ -30,7 +33,7 @@ it('message of new post should be correct', () => {
 });
 
 it('after deleting length of messages should be decrement', () => {
-    let action = deletePost(1);
+    let action = actions.deletePost(1);
     //action
     let newState = profileReducer(state, action);
     //expectation
@@ -38,7 +41,7 @@ it('after deleting length of messages should be decrement', () => {
 });
 
 it(`after deleting length of messages should't be decrement if ID is incorrect`, () => {
-    let action = deletePost(1000);    //action
+    let action = actions.deletePost(1000);    //action
     let newState = profileReducer(state, action);
     //expectation
     expect(newState.postsData.length).toBe(5);

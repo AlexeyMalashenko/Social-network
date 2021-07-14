@@ -1,7 +1,8 @@
-import {followAPI, ResultCodeEnum, userAPI} from "../api/api";
+import {ResultCodeEnum} from "../api/api";
 import {userType} from "../types/types";
-import {AppStateType, InferActionsTypes} from "./redux-store";
+import {AppStateType, BaseThunkType, InferActionsTypes} from "./redux-store";
 import {ThunkAction} from "redux-thunk";
+import {followAPI, userAPI } from "../api/users-api";
 
 let initialState = {
     users: [] as Array<userType>,
@@ -98,7 +99,7 @@ export const actions = {
     } as const)
 }
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
+type ThunkType = BaseThunkType<ActionsTypes>;
 
 //санки
 export const requestUsers = (page: number, pageSize: number): ThunkType => {
