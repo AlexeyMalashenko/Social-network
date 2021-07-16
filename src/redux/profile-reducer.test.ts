@@ -1,6 +1,4 @@
 import profileReducer, {actions} from "./profile-reducer";
-import React from "react";
-import {profileType} from "../types/types";
 
 //start test data
 let state = {

@@ -14,9 +14,6 @@ let initialState = {
     captchaUrl: null as string | null
 };
 
-export type initialStateType = typeof initialState;
-type ActionsType = InferActionsTypes<typeof actions>
-
 const authReducer = (state = initialState, action: ActionsType): initialStateType => {
     switch (action.type) {
         case 'auth/SET_USER_DATA':
@@ -38,9 +35,6 @@ export const actions = {
         type: 'auth/GET_CAPTCHA_URL_SUCCESS', payload: {captchaUrl}
     } as const)
 }
-
-type ThunkType = BaseThunkType<ActionsType | ReturnType<typeof stopSubmit>>;
-
 //санки
 export const getAuthUserData = (): ThunkType => async (dispatch) => {
     let meData = await authAPI.me();
@@ -79,3 +73,7 @@ export const getCaptcha = (): ThunkType => async (dispatch) => {
 }
 
 export default authReducer;
+
+export type initialStateType = typeof initialState;
+type ActionsType = InferActionsTypes<typeof actions>;
+type ThunkType = BaseThunkType<ActionsType | ReturnType<typeof stopSubmit>>;

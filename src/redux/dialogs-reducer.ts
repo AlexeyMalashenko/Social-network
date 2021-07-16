@@ -1,5 +1,5 @@
 import { dialogType, messageType } from "../types/types";
-import {InferActionsTypes} from "./redux-store";
+import {BaseThunkType, InferActionsTypes} from "./redux-store";
 
 
 let initialState = {
@@ -19,9 +19,6 @@ let initialState = {
     ] as Array<messageType>
 }
 
-export type initialStateType = typeof initialState;
-type ActionsType = InferActionsTypes<typeof actions>;
-
 export const dialogsReducer = (state = initialState, action: ActionsType): initialStateType => {
     switch (action.type) {
         case "dialogs/ADD-MESSAGE":
@@ -40,3 +37,7 @@ export const actions = {
 }
 
 export default dialogsReducer;
+
+export type initialStateType = typeof initialState;
+type ActionsType = InferActionsTypes<typeof actions>;
+//type ThunkType = BaseThunkType<ActionsType>;

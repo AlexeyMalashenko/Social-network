@@ -1,7 +1,6 @@
 import {ResultCodeEnum} from "../api/api";
 import {userType} from "../types/types";
-import {AppStateType, BaseThunkType, InferActionsTypes} from "./redux-store";
-import {ThunkAction} from "redux-thunk";
+import {BaseThunkType, InferActionsTypes} from "./redux-store";
 import {followAPI, userAPI } from "../api/users-api";
 
 let initialState = {
@@ -12,8 +11,6 @@ let initialState = {
     isFetching: false,
     followingInProgress: [] as Array<number> // array of users ids
 };
-
-type initialStateType = typeof initialState;
 
 const usersReducer = (state = initialState, action: ActionsTypes): initialStateType => {
     switch (action.type) {
@@ -73,8 +70,6 @@ const usersReducer = (state = initialState, action: ActionsTypes): initialStateT
             return state;
     }
 };
-//типизация экшенов
-type ActionsTypes = InferActionsTypes<typeof actions>
 
 export const actions = {
     followSuccess : (userId: number) => ({type: 'FOLLOW', userId} as const),
@@ -98,8 +93,6 @@ export const actions = {
         userId
     } as const)
 }
-
-type ThunkType = BaseThunkType<ActionsTypes>;
 
 //санки
 export const requestUsers = (page: number, pageSize: number): ThunkType => {
@@ -135,5 +128,8 @@ export const unfollow = (userId: number): ThunkType => {
     }
 };
 
-
 export default usersReducer;
+
+type initialStateType = typeof initialState;
+type ActionsTypes = InferActionsTypes<typeof actions>
+type ThunkType = BaseThunkType<ActionsTypes>;
