@@ -1,16 +1,35 @@
-import React from 'react';
+import React, {ComponentType} from 'react';
 import Profile from "./Profile";
 import {connect} from "react-redux";
 import {getUserProfile, getUserStatus, updateUserStatus, saveProfileUserPhoto, saveUserProfile} from "../../redux/profile-reducer";
-import {withRouter} from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import {compose} from "redux";
+import {AppStateType} from "../../redux/redux-store";
+import {profileType} from "../../types/types";
 
 
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
-class ProfileContainer extends React.Component {
+type MapDispatchPropsType = {
+    getUserProfile: (userId: number | null) => void
+    getUserStatus: (userId: number | null) => void
+    updateUserStatus: (status: string) => void
+    saveProfileUserPhoto: (file: any) => void
+    saveUserProfile: (profile: profileType) => Promise<any>
+
+}
+// типы для withRouter
+type PathParamsType = {
+    userId: string
+}
+type RouteComponentPropsType = RouteComponentProps<PathParamsType>
+
+type PropsType = MapStatePropsType & MapDispatchPropsType & RouteComponentPropsType;
+
+class ProfileContainer extends React.Component<PropsType>  {
 
     refreshProfile() {
-        let userId = this.props.match.params.userId;
+        let userId: number | null = +this.props.match.params.userId;
         if (!userId) {
             userId = this.props.authorizedUserId;
             if (!userId) {
@@ -25,7 +44,7 @@ class ProfileContainer extends React.Component {
         this.refreshProfile();
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps: PropsType) {
         if (this.props.match.params.userId != prevProps.match.params.userId) {
             this.refreshProfile();
         }
@@ -46,7 +65,7 @@ class ProfileContainer extends React.Component {
 }
 
 
-let mapStateToProps = (state) => ({
+let mapStateToProps = (state: AppStateType) => ({
     profile: state.profilePage.profile,
     status: state.profilePage.status,
     authorizedUserId: state.auth.userId,
@@ -54,7 +73,7 @@ let mapStateToProps = (state) => ({
 });
 
 
-export default compose(
+export default compose<ComponentType>(
     connect(mapStateToProps, {getUserProfile,
         getUserStatus,
         updateUserStatus,

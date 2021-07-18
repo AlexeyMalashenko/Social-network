@@ -4,7 +4,6 @@ import {Input} from "../common/FormsControls/FormsControls";
 import {maxLengthCreator, required} from "../../utils/validators/validators";
 import {Redirect} from "react-router-dom";
 import styles from "./../common/FormsControls/FormsControls.module.css";
-import {Validator} from "redux-form/lib/Field";
 
 const maxLength40 = maxLengthCreator(40);
 

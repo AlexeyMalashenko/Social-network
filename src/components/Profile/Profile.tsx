@@ -5,11 +5,11 @@ import {profileType} from "../../types/types";
 
 type PropsType = {
     isOwner: boolean
-    profile: profileType
+    profile: profileType | null
     status: string
     updateUserStatus: (status: string) => void
     saveProfileUserPhoto: (file: any) => void
-    saveUserProfile: (profile: profileType) => void
+    saveUserProfile: (profile: profileType) => Promise<any>
 }
 
 const Profile:React.FC<PropsType> = (props) => {

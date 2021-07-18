@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ComponentType } from 'react'
 import {connect} from "react-redux";
 import {
     follow,
@@ -73,7 +73,7 @@ let mapStateToProps = (state: AppStateType): MapStatePropsType => {
     }
 }
 
-export default compose(
+export default compose<ComponentType>(
     // <TStateProps = {}, TDispatchProps = {}, TOwnProps = {}, State = DefaultState>
     connect<MapStatePropsType, MapDispatchPropsType, null, AppStateType>(mapStateToProps,
         {follow, unfollow, getUsers: requestUsers

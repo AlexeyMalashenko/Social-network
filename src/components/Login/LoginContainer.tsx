@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {ComponentType} from 'react';
 import {connect} from "react-redux";
 import Login from "./Login";
 import {login, logout} from "../../redux/auth-reducer";
 import {AppStateType} from "../../redux/redux-store";
+import { compose } from 'redux';
 
 type MapStatePropsType = {
     isAuth: boolean
@@ -35,6 +36,6 @@ const mapStateToProps = (state: AppStateType): MapStatePropsType => ({
     captchaUrl: state.auth.captchaUrl
 })
 
-export default connect<MapStatePropsType, MapDispatchPropsType, null, AppStateType>(mapStateToProps, {
+export default compose<ComponentType>(connect<MapStatePropsType, MapDispatchPropsType, null, AppStateType>(mapStateToProps, {
     login, logout
-})(LoginContainer);
+}))(LoginContainer);

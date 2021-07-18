@@ -1,23 +1,21 @@
 import React from 'react';
-import s from './Dialogs.module.css';
+import style from './Dialogs.module.css';
 import Message from "./Message/Message";
 import DialogItem from "./DialogItem/DialogItem";
-import {Redirect} from "react-router-dom";
-import {Field, reduxForm} from "redux-form";
-import {TextArea} from "../common/FormsControls/FormsControls";
-import {maxLengthCreator, required} from "../../utils/validators/validators";
 import {dialogType, messageType } from '../../types/types';
-
-const maxLength100 = maxLengthCreator(100);
+import AddMessageForm from './AddMessageForm/AddMessageForm';
 
 type PropsType = {
-    isAuth: boolean
     dialogs: Array<dialogType>
     messages: Array<messageType>
     sendMessage: (newMessageBody: string) => void
 }
 
-const Dialogs: React.FC<PropsType> = ({dialogs, messages, isAuth, sendMessage }) => {
+export type NewMessageFormType = {
+    newMessageBody: string
+}
+
+const Dialogs: React.FC<PropsType> = ({dialogs, messages, sendMessage }) => {
 
     let dialogsElements = dialogs
         .map(dialog =>
@@ -29,49 +27,21 @@ const Dialogs: React.FC<PropsType> = ({dialogs, messages, isAuth, sendMessage })
             <Message message={message.message} key={message.id}/>
         );
 
-    if (!isAuth) return <Redirect to={"/login"}/>;
-
-    const addNewMessage = (formData: any) => {
+    const addNewMessage = (formData: NewMessageFormType) => {
         sendMessage(formData.newMessageBody);
     }
     return (
-        <div className={s.dialogs}>
-            <div className={s.dialogsItems}>
+        <div className={style.dialogs}>
+            <div className={style.dialogsItems}>
                 {dialogsElements}
             </div>
-            <div className={s.messages}>
+            <div className={style.messages}>
                 {messagesElements}
-                <AddMessageReduxForm onSubmit={addNewMessage}/>
+                <AddMessageForm onSubmit={addNewMessage}/>
             </div>
 
         </div>
     )
 }
-
-type PropsFormType= {
-    handleSubmit: any
-}
-
-const AddMessageForm:React.FC<PropsFormType> = ({handleSubmit}) => {
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <Field
-                       component={TextArea}
-                       name={"newMessageBody"}
-                       placeholder={"Введите ваше сообщение"}
-                       validate={[required, maxLength100]}
-                />
-            </div>
-            <div>
-                <button>
-                    Отправить
-                </button>
-            </div>
-        </form>
-    )
-}
-
-const AddMessageReduxForm = reduxForm({form: 'dialogAddMessageForm'})(AddMessageForm)
 
 export default Dialogs;
