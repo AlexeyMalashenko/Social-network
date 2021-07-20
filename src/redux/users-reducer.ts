@@ -111,7 +111,7 @@ export const follow = (userId: number): ThunkType => {
         dispatch(actions.toggleFollowingProgress(true, userId));
         let data = await followAPI.setFollow(userId);
         if (data.resultCode == ResultCodeEnum.Success) {
-            dispatch(actions.followSuccess(userId));
+             dispatch(actions.followSuccess(userId));
         }
         dispatch(actions.toggleFollowingProgress(false, userId));
     }
@@ -130,6 +130,6 @@ export const unfollow = (userId: number): ThunkType => {
 
 export default usersReducer;
 
-type initialStateType = typeof initialState;
+export type initialStateType = typeof initialState;
 type ActionsTypes = InferActionsTypes<typeof actions>
 type ThunkType = BaseThunkType<ActionsTypes>;

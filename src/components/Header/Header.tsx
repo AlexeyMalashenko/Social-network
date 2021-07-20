@@ -8,7 +8,7 @@ type PropsType = {
     logout: () => void
 }
 
-const Header:React.FC<PropsType> = ({isAuth, login,logout}) => {
+const Header: React.FC<PropsType> = ({isAuth, login,logout}) => {
     return <header className={style.header}>
         <img src='https://static-cse.canva.com/blob/232576/800px-NBC_logo.svg.png'/>
 
