@@ -1,7 +1,7 @@
 import {ResultCodeEnum} from "../api/api";
 import {userType} from "../types/types";
 import {BaseThunkType, InferActionsTypes} from "./redux-store";
-import {followAPI, userAPI } from "../api/users-api";
+import {followAPI, userAPI} from "../api/users-api";
 
 let initialState = {
     users: [] as Array<userType>,
@@ -72,22 +72,22 @@ const usersReducer = (state = initialState, action: ActionsTypes): initialStateT
 };
 
 export const actions = {
-    followSuccess : (userId: number) => ({type: 'FOLLOW', userId} as const),
-    unfollowSuccess : (userId: number) => ({type: 'UNFOLLOW', userId} as const),
-    setUsers : (users: Array<userType>) => ({type: 'SET_USERS', users} as const),
-    setCurrentPage : (currentPage: number) => ({
+    followSuccess: (userId: number) => ({type: 'FOLLOW', userId} as const),
+    unfollowSuccess: (userId: number) => ({type: 'UNFOLLOW', userId} as const),
+    setUsers: (users: Array<userType>) => ({type: 'SET_USERS', users} as const),
+    setCurrentPage: (currentPage: number) => ({
         type: 'SET_CURRENT_PAGE',
         currentPage
     } as const),
-    setTotalUsersCount : (totalUsersCount: number) => ({
+    setTotalUsersCount: (totalUsersCount: number) => ({
         type: 'SET_TOTAL_USERS_COUNT',
         totalUsersCount
     } as const),
-    toggleIsFetching : (isFetching: boolean) => ({
+    toggleIsFetching: (isFetching: boolean) => ({
         type: 'TOGGLE_IS_FETCHING',
         isFetching
     } as const),
-    toggleFollowingProgress : (isFetching: boolean, userId: number) => ({
+    toggleFollowingProgress: (isFetching: boolean, userId: number) => ({
         type: 'TOGGLE_IS_FOLLOWING_PROGRESS',
         isFetching,
         userId
@@ -108,12 +108,12 @@ export const requestUsers = (page: number, pageSize: number): ThunkType => {
 
 export const follow = (userId: number): ThunkType => {
     return async (dispatch) => {
-        dispatch(actions.toggleFollowingProgress(true, userId));
+        await dispatch(actions.toggleFollowingProgress(true, userId));
         let data = await followAPI.setFollow(userId);
         if (data.resultCode == ResultCodeEnum.Success) {
-             dispatch(actions.followSuccess(userId));
+               await dispatch(actions.followSuccess(userId));
         }
-        dispatch(actions.toggleFollowingProgress(false, userId));
+        await dispatch(actions.toggleFollowingProgress(false, userId));
     }
 };
 
