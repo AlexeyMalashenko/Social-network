@@ -15,7 +15,10 @@ beforeEach(() => {
         totalUsersCount: 0,
         currentPage: 1,
         isFetching: false,
-        followingInProgress: []
+        followingInProgress: [],
+        filter: {
+            term: ""
+        }
     }
 }) // инициализация ЧИСТОГО стейта перед каждый новым тестом
 

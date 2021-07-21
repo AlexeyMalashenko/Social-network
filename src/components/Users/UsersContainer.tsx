@@ -3,7 +3,8 @@ import {connect} from "react-redux";
 import {
     follow,
     unfollow,
-    requestUsers
+    requestUsers,
+    FilterType
 } from "../../redux/users-reducer";
 import Users from "./Users";
 import Preloader from "../common/Preloader/preloader";
@@ -30,7 +31,7 @@ type MapStatePropsType = {
 type MapDispatchPropsType = {
     follow: (userId: number) => void
     unfollow: (userId: number) => void
-    getUsers: (currentPage: number, pageSize: number) => void
+    getUsers: (currentPage: number, pageSize: number, term: string) => void
 }
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
@@ -39,13 +40,17 @@ class UsersContainer extends React.Component<PropsType> {
     componentDidMount() {
         //деструктуризация
         const {currentPage, pageSize} = this.props;
-        this.props.getUsers(currentPage, pageSize);
+        this.props.getUsers(currentPage, pageSize, "");
     }
 
     onPageChanged = (pageNumber: number) => {
-        this.props.getUsers(pageNumber, this.props.pageSize);
+        this.props.getUsers(pageNumber, this.props.pageSize, "");
     }
 
+    onFilterChanged = (filter: FilterType) => {
+        const {currentPage, pageSize} = this.props;
+        this.props.getUsers(currentPage, pageSize, filter.term);
+    }
     render() {
         return <>
             {this.props.isFetching && <Preloader/>}
@@ -57,6 +62,7 @@ class UsersContainer extends React.Component<PropsType> {
                    follow={this.props.follow}
                    unfollow={this.props.unfollow}
                    followingInProgress={this.props.followingInProgress}
+                   onFilterChanged={this.onFilterChanged}
             />
         </>
     }
