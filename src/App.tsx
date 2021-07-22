@@ -6,13 +6,14 @@ import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 import {BrowserRouter, Route, withRouter, Switch, Redirect} from "react-router-dom";
 import HeaderContainer from "./components/Header/HeaderContainer";
-import LoginContainer from "./components/Login/LoginContainer";
 import {connect, Provider} from "react-redux";
 import {initializeApp} from "./redux/app-reducer";
 import Preloader from "./components/common/Preloader/preloader";
 import {compose} from "redux";
 import store, {AppStateType} from "./redux/redux-store";
 import { UsersPage } from './components/Users/UsersContainer';
+import { LoginPage } from './components/Login/LoginPage';
+
 
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
@@ -45,7 +46,7 @@ class App extends React.Component<MapPropsType & DispatchPropsType> {
                             <Route path='/music' render={() => <Music/>}/>
                             <Route path='/settings' render={() => <Settings/>}/>
                             <Route path='/users' render={() => <UsersPage/>}/>
-                            <Route path='/login' render={() => <LoginContainer/>}/>
+                            <Route path='/login' render={() => <LoginPage/>}/>
                         </Switch>
                     </div>
                 </React.Suspense>

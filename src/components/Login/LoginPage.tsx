@@ -1,9 +1,12 @@
 import React from 'react';
-import {Field, InjectedFormProps, reduxForm, WrappedFieldProps} from "redux-form";
+import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {Input} from "../common/FormsControls/FormsControls";
 import {maxLengthCreator, required} from "../../utils/validators/validators";
 import {Redirect} from "react-router-dom";
 import styles from "./../common/FormsControls/FormsControls.module.css";
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "../../redux/redux-store";
+import { login } from '../../redux/auth-reducer';
 
 const maxLength40 = maxLengthCreator(40);
 
@@ -57,16 +60,6 @@ const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType, LoginFormOwnPro
 
 const LoginReduxForm = reduxForm<LoginFormValuesType, LoginFormOwnProps>({form: 'login'})(LoginForm);
 
-type LoginTypes = {
-    captchaUrl: string | null
-    isAuth: boolean
-    login: (email: string,
-            password: string,
-            rememberMe: boolean,
-            captcha: string | null) => void
-    logout: () => void
-}
-
 type LoginFormValuesType = {
     email: string
     password: string
@@ -74,17 +67,22 @@ type LoginFormValuesType = {
     captcha: string | null
 }
 
-const Login: React.FC<LoginTypes> = (props) => {
+export const LoginPage: React.FC = (props) => {
+
+    const captchaUrl = useSelector((state: AppStateType) => state.auth.captchaUrl)
+    const isAuth = useSelector((state: AppStateType) => state.auth.isAuth)
+
+    const dispatch = useDispatch()
+
     const onSubmit = (formData: LoginFormValuesType) => {
-        props.login(formData.email, formData.password, formData.rememberMe, formData.captcha);
+        dispatch(login(formData.email, formData.password, formData.rememberMe, formData.captcha))
     }
-    if (props.isAuth) {
+    if (isAuth) {
         return <Redirect to={"/profile"}/>
     }
     return <div>
         <h1>Логин</h1>
-        <LoginReduxForm captchaUrl={props.captchaUrl} onSubmit={onSubmit}/>
+        <LoginReduxForm captchaUrl={captchaUrl} onSubmit={onSubmit}/>
     </div>
 }
 
-export default Login;
