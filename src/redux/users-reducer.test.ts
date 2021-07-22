@@ -17,7 +17,8 @@ beforeEach(() => {
         isFetching: false,
         followingInProgress: [],
         filter: {
-            term: ""
+            term: "",
+            friend: null as null | boolean
         }
     }
 }) // инициализация ЧИСТОГО стейта перед каждый новым тестом
