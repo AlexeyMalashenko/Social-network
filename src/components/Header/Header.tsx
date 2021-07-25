@@ -1,23 +1,48 @@
 import React from 'react';
-import style from './Header.module.css';
-import {NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
+import {Avatar, Button, Col, Layout, Menu, Row} from "antd";
+import {UserOutlined} from '@ant-design/icons';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectIsAuth, selectLogin} from '../../redux/auth-selectors';
+import {logout} from '../../redux/auth-reducer';
 
-type PropsType = {
-    isAuth: boolean
-    login: string | null
-    logout: () => void
-}
+export const Header: React.FC = (props) => {
 
-const Header: React.FC<PropsType> = ({isAuth, login,logout}) => {
-    return <header className={style.header}>
-        <img src='https://static-cse.canva.com/blob/232576/800px-NBC_logo.svg.png'/>
+    const isAuth = useSelector(selectIsAuth);
+    const login = useSelector(selectLogin);
 
-        <div className={style.loginBlock}>
+    const dispatch = useDispatch()
+
+    const logoutCallBack = () => {
+        dispatch(logout())
+    }
+
+    const {Header} = Layout;
+
+    return <Header className="header">
+        <Row>
+            <Col span={16}>
+                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+                    {/*<Menu.Item key="1">nav 1</Menu.Item>*/}
+                    {/*<Menu.Item key="2">nav 2</Menu.Item>*/}
+                    {/*<Menu.Item key="3">nav 3</Menu.Item>*/}
+                </Menu>
+            </Col>
             {isAuth ?
-               <div>{login} - <button onClick={logout}>Выйти</button> </div>  :
-                <NavLink to={'/login'}>Login</NavLink>}
-        </div>
-    </header>
-}
+                <> <Col span={2}>
+                    <Avatar style={{backgroundColor: '#87d068'}} icon={<UserOutlined/>}/>
+                </Col>
+                    <Col span={6}>
+                        <Button onClick={logoutCallBack}>Выйти</Button>
+                    </Col>
+                </>
+                : <Col span={8}>
+                    <Button>
+                        <Link to={'/login'}>Войти</Link>
+                    </Button>
+                </Col>}
+        </Row>
+    </Header>
 
-export default Header;
+
+}

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import Paginator from "../common/Paginator/Paginator";
 import User from "./User";
 import UsersSearchForm from './UsersSearchForm';
-import {FilterType, requestUsers} from "../../redux/users-reducer";
+import {FilterType, requestUsers, follow, unfollow} from "../../redux/users-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {
     getCurrentPage,
@@ -30,7 +30,7 @@ export const Users: React.FC<PropsType> = (props) => {
     const history = useHistory()
 
     useEffect(() => {
-        const parsed = queryString.parse(history.location.search.substring(1)) as {term: string, page: string, friend: string};
+        const parsed = queryString.parse(history.location.search.substring(1)) as {term?: string, page?: string, friend?: string};
 
         let actualPage = currentPage
         let actualFilter = filter
@@ -43,9 +43,17 @@ export const Users: React.FC<PropsType> = (props) => {
     }, [])
 
     useEffect( () => {
+
+        const query: {term?: string, page?: string, friend?: string} = {}
+
+            if (!!filter.term) query.term = filter.term
+            if (filter.friend !== null) query.friend = String(filter.friend)
+            if (currentPage !== 1) query.page = String(currentPage)
+
+
         history.push({
             pathname: "/users",
-            search: `?term=${filter.term}&friend=${filter.friend}&page=${currentPage}`
+            search: queryString.stringify(query)
         })
     }, [filter, currentPage])
 
@@ -57,11 +65,11 @@ export const Users: React.FC<PropsType> = (props) => {
         dispatch(requestUsers(1, pageSize, filter));
     }
 
-    const follow = (userId: number) => {
+    const onUserFollow = (userId: number) => {
         dispatch(follow(userId))
     }
 
-    const unfollow = (userId: number) => {
+    const onUserUnfollow = (userId: number) => {
         dispatch(unfollow(userId))
     }
 
@@ -74,7 +82,7 @@ export const Users: React.FC<PropsType> = (props) => {
             {
                 users.map((user) => <User user={user}
                                           key={user.id} followingInProgress={followingInProgress}
-                                          follow={follow} unfollow={unfollow}
+                                          onUserFollow={onUserFollow} onUserUnfollow={onUserUnfollow}
                 />)
             }
         </div>
