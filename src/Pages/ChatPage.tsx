@@ -51,8 +51,8 @@ const Message: React.FC<{ message: ChatMessageType }> = ({message}) => {
 
 const MessageForm: React.FC = () => {
     const [message, setMessage] = useState('')
-    const [readyStatus, setReadyStatus] = useState<'pending' | 'ready'>('pending')
     const dispatch = useDispatch()
+    const status = useSelector((state: AppStateType) => state.chat.status)
 
     const sendMessageHandler = () => {
         if (!message) {
@@ -64,10 +64,10 @@ const MessageForm: React.FC = () => {
 
     return <div>
         <div>
-            <textarea onChange={(e) => setMessage(e.currentTarget.value)} value={message}></textarea>
+            <textarea onChange={(e) => setMessage(e.currentTarget.value)} value={message}/>
         </div>
         <div>
-            <button disabled={false} onClick={sendMessageHandler}>Отправить</button>
+            <button disabled={status !== "ready"} onClick={sendMessageHandler}>Отправить</button>
         </div>
     </div>
 }

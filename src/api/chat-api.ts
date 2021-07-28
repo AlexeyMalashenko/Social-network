@@ -1,28 +1,32 @@
-
-
-let subscribers = [] as SubscriberType[]
-
-let ws: WebSocket | null = null;
-
+let subscribers = {
+    'messages-received': [] as MessagesReceivedSubscriberType[],
+    'status-changed': [] as MessagesReceivedSubscriberType[]
+}
+let ws: WebSocket | null = null
+type EventsNamesType = 'messages-received' | 'status-changed'
 //вынос обработчика отдельно от ивенлисенера, т.к. нужна ссылка на одну и туже функцию, чтобы её ремувнуть
 const closeHandler = () => {
-    setTimeout(createChannel, 3000);
+    setTimeout(createChannel, 3000)
 }
 
 const messageHandler = (e: MessageEvent) => {
-    const newMessages = JSON.parse(e.data);
-    subscribers.forEach(s => s(newMessages))
-};
+    const newMessages = JSON.parse(e.data)
+    subscribers["messages-received"].forEach(s => s(newMessages))
+}
+
+const cleanUp = () => {
+    ws?.removeEventListener("close", closeHandler)
+    ws?.removeEventListener("message", messageHandler)
+}
 
 function createChannel() {
-    ws?.removeEventListener("close", closeHandler);
-    ws?.close();
-    ws = new WebSocket('wss://social-network.samuraijs.com/handlers/ChatHandler.ashx');
+    cleanUp()
+    ws?.close()
+    ws = new WebSocket('wss://social-network.samuraijs.com/handlers/ChatHandler.ashx')
     ws?.addEventListener("close", closeHandler)
     ws?.addEventListener("message", messageHandler)
 
-};
-
+}
 
 
 export const chatApi = {
@@ -30,25 +34,25 @@ export const chatApi = {
         createChannel()
     },
     stop() {
-        subscribers = []
-        ws?.removeEventListener("close", closeHandler)
-        ws?.removeEventListener("message", messageHandler)
+        subscribers["messages-received"] = []
+        subscribers["status-changed"] = []
+        cleanUp()
         ws?.close()
     },
-    subscribe(callback: SubscriberType) {
-        subscribers.push(callback)
+    subscribe(eventName: EventsNamesType, callback: MessagesReceivedSubscriberType | StatusChangedSubscriberType) {
+        // @ts-ignore
+        subscribers[eventName].push(callback)
         return () => {
-            subscribers = subscribers.filter(s => s !== callback)
+            subscribers[eventName] = subscribers[eventName].filter(s => s !== callback)
         }
     },
-    unsubscribe(callback: SubscriberType) {
-        subscribers = subscribers.filter(s => s !== callback)
+    unsubscribe(eventName: EventsNamesType, callback: MessagesReceivedSubscriberType | StatusChangedSubscriberType) {
+        subscribers[eventName] = subscribers[eventName].filter(s => s !== callback)
     },
     sendMessage(message: string) {
         ws?.send(message)
     }
 }
-
 
 export type ChatMessageType = {
     message: string
@@ -57,6 +61,9 @@ export type ChatMessageType = {
     userName: string
 }
 
-type SubscriberType = (messages: ChatMessageType[]) => void;
+export type StatusType = 'pending' | 'ready';
+
+type MessagesReceivedSubscriberType = (messages: ChatMessageType[]) => void;
+type StatusChangedSubscriberType = (status: StatusType) => void;
 
 
