@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {ChatMessageType} from "../api/chat-api";
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage, startMessagesListening, stopMessagesListening} from "../redux/chat-reducer";
@@ -12,9 +12,7 @@ const ChatPage: React.FC<any> = () => {
 }
 
 const Chat: React.FC = () => {
-
     const dispatch = useDispatch()
-
     useEffect(() => {
         dispatch(startMessagesListening())
         return () => {
@@ -23,18 +21,26 @@ const Chat: React.FC = () => {
     }, [])
 
     return <div>
-        <Messages/>
-        <MessageForm/>
+{/*        {status === 'error' && <div> Ошибка. Перезагрузите страницу.</div>}*/}
+             <>
+                <Messages/>
+                <MessageForm/>
+            </>
     </div>
 }
 
 const Messages: React.FC = () => {
 
     const messages = useSelector((state: AppStateType) => state.chat.messages)
+    const messageAnchorRef = useRef<HTMLDivElement>(null)
 
+    useEffect( () => {
+        messageAnchorRef.current?.scrollIntoView({behavior: "smooth"})
+    }, [messages])
 
     return <div style={{height: "500px", overflowY: "auto"}}>
         {messages.map((m, index) => <Message key={index} message={m}/>)}
+        <div ref={messageAnchorRef}/>
     </div>
 }
 

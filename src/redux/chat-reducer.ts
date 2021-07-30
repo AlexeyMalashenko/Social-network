@@ -36,7 +36,6 @@ export const actions = {
 
 //мемо
 let _newMessageHandler: ((messages: ChatMessageType[]) => void) | null = null
-
 const newMessageHandlerCreator = (dispatch: Dispatch) => {
     if (_newMessageHandler === null) {
         _newMessageHandler = (messages) => {
@@ -47,15 +46,28 @@ const newMessageHandlerCreator = (dispatch: Dispatch) => {
     return _newMessageHandler
 }
 
+let _newMessageStatusChangedHandler: ((messages: StatusType) => void) | null = null
+const statusChangedHandlerCreator = (dispatch: Dispatch) => {
+    if (_newMessageStatusChangedHandler === null) {
+        _newMessageStatusChangedHandler = (status) => {
+            dispatch(actions.statusChanged(status))
+        }
+    }
+
+    return _newMessageStatusChangedHandler
+}
+
 //санки
 export const startMessagesListening = (): ThunkType => async (dispatch) => {
     chatApi.start()
-    chatApi.subscribe('messages-received', newMessageHandlerCreator(dispatch))
+    chatApi.subscribe("messages-received", newMessageHandlerCreator(dispatch))
+    chatApi.subscribe("status-changed", statusChangedHandlerCreator(dispatch))
 }
 
 export const stopMessagesListening = (): ThunkType => async (dispatch) => {
     chatApi.stop()
     chatApi.unsubscribe("messages-received", newMessageHandlerCreator(dispatch))
+    chatApi.unsubscribe("status-changed", statusChangedHandlerCreator(dispatch))
 }
 
 export const sendMessage = (message: string): ThunkType => async (dispatch) => {
